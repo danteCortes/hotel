@@ -356,29 +356,33 @@ class HotelController extends Controller{
   public function buscarHuesped(Request $request){
     $habitacion = \App\Habitacion::find($request->id);
     $huesped = \App\Huesped::where('habitacion_id', $request->id)->where(function($query){
-      $query->where('salida', null)->orWhereDate(\DB::raw("date(salida)"), '<=', \Carbon\Carbon::now()->format('Y-m-d'));
+      $query->where('salida', null)->orWhereDate(\DB::raw("date(salida)"), '>=', \Carbon\Carbon::now()->format('Y-m-d'));
     })->first();
     if ($persona = \App\Persona::find($huesped->persona_id)) {
-      return [$habitacion, $persona, $huesped];
+      return [$habitacion, $persona, $huesped, $habitacion->edificio];
     }
     return $huesped;
 
   }
 
   public function modificarHuesped(Request $request, $id){
-    $habitacion = \App\Habitacion::find($id);return $habitacion;
-    // $datosPersona = ['dni'=>$request->dni, 'nombres'=>$request->nombres, 'apellidos'=>$request->apellidos,
-    // 'direccion'=>$request->direccion, 'telefono'=>$request->telefono];
-    // if ($persona = \App\Persona::where('dni', $request->dni)->first()) {
-    //   $persona = $this->actualizarPersona($persona, $datosPersona);
-    // }else{
-    //   $persona = $this->guardarPersona($datosPersona);
-    // }
-    // $huesped = new \App\Huesped;
-    // $huesped->persona_id = $persona->id;
-    // $huesped->salida = $request->salida;
-    // $huesped->save();
-    // return redirect('hotel')->with('EL HUESPED SE REGISTRÓ CORRECTAMENTE EN LA HABITACIÓN '.$habitacion->numero);
+    $huesped = \App\Huesped::where('habitacion_id', $id)
+      ->latest('inicio')
+      ->first();
+    $persona = $huesped->persona;
+    if ($request->dni != $persona->dni) {
+      if (\App\Persona::where('dni', $request->dni)->first()) {
+        return redirect('hotel')->with('error', 'EL DNI '.$request->dni.' ESTÁ REGISTRADO EN OTRO HUESPED.');
+      }
+    }
+    $datosPersona = ['dni'=>$request->dni, 'nombres'=>$request->nombres, 'apellidos'=>$request->apellidos,
+    'direccion'=>$request->direccion, 'telefono'=>$request->telefono];
+    $persona = $this->actualizarPersona($persona, $datosPersona);
+
+    $huesped->salida = $request->salida;
+    $huesped->save();
+
+    return redirect('hotel')->with('correcto', 'EL HUESPED FUE ACTUALIZADO CON ÉXITO.');
   }
 
 }

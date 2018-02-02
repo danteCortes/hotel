@@ -77,6 +77,11 @@
       }, 500);
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-registrar").on("click", function(e){
+        $(".dni").val("");
+        $(".nombres").val("");
+        $(".apellidos").val("");
+        $(".telefono").val("");
+        $(".salida").val("");
         $.post("{{url('habitacion/buscar')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
           if (data[3] == null) {
             $(".hab_numero").html(data[0]['numero']);
@@ -96,6 +101,8 @@
           $(".precio").html(data[0]['precio'].toFixed(2));
           $(".inicio").html(data[2]['inicio']);
           $(".salida").html(data[2]['salida']);
+          $(".hab_numero").html(data[0]['numero']);
+          $(".edif_nombre").html(data[3]['nombre']);
           $("#ver").modal('show');
         });
       }).end().find(".command-modificar").on('click', function(e) {
@@ -104,7 +111,9 @@
           $(".nombres").val(data[1]['nombres']);
           $(".apellidos").val(data[1]['apellidos']);
           $(".telefono").val(data[1]['telefono']);
-          $(".salida").html(data[2]['salida']);
+          $(".salida").val(data[2]['salida']);
+          $(".hab_numero").html(data[0]['numero']);
+          $(".edif_nombre").html(data[3]['nombre']);
           $("#frmEditar").prop('action', "{{url('hotel/modificar-huesped')}}/" + data[0]['id']);
           $("#editar").modal('show');
         });
