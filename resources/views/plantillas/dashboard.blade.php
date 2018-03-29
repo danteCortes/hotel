@@ -211,6 +211,13 @@
 
     {{Html::script('assets/lib/mask/jquery.mask.js')}}
 
+    {{Html::script('assets/lib/moment/moment.min.js')}}
+
+    <script>
+      $(document).ready(function(){
+        $(".fecha").mask("99/99/9999", {reverse: false});
+      });
+    </script>
 
     @yield('scripts')
 </body>

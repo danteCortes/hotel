@@ -7,7 +7,7 @@ use App\Persona;
 
 trait PersonaTrait{
 
-  public function guardarPersona(array $datos){
+  static function guardar(array $datos){
 
     $persona = new Persona;
     $persona->dni = $datos['dni'];
@@ -17,10 +17,10 @@ trait PersonaTrait{
     $persona->telefono = $datos['telefono'];
     $persona->save();
 
-    return Persona::where('dni', $datos['dni'])->first();
+    return $persona;
   }
 
-  public function actualizarPersona(Persona $persona, array $datos){
+  static function modificar(Persona $persona, array $datos){
 
     $persona->dni = $datos['dni'];
     $persona->nombres = mb_strtoupper($datos['nombres']);
@@ -29,7 +29,7 @@ trait PersonaTrait{
     $persona->telefono = $datos['telefono'];
     $persona->save();
 
-    return Persona::where('dni', $datos['dni'])->first();
+    return $persona;
   }
 
 

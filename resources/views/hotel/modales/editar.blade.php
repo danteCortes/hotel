@@ -1,7 +1,7 @@
-<div class="modal fade" id="editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="mdlEditarHuesped" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      {{Form::open(['id'=>'frmEditar', 'method'=>'put'])}}
+      {{Form::open(['id'=>'frmEditarHuesped', 'method'=>'put'])}}
       {{ csrf_field() }}
       <div class="modal-header" style="background-color:#385a94; color:#fff;">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -26,7 +26,7 @@
               <input type="text" class="form-control input-sm telefono" placeholder="TELÉFONO" name="telefono">
             </div>
             <div class="form-group">
-              <input type="date" class="form-control input-sm salida" placeholder="SALIDA" name="salida">
+              <input type="text" class="form-control input-sm fecha salida" placeholder="SALIDA" name="salida">
             </div>
           </div>
         </div>
@@ -34,7 +34,9 @@
       <div class="modal-footer" style="background-color:#385a94">
         <button type="button" class="btn btn-default" data-dismiss="modal">
           <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
-        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Modificar</button>
+        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> 
+          Modificar</button>
+        {{Form::hidden('habitacion_id', null)}}
       </div>
       {{Form::close()}}
     </div>

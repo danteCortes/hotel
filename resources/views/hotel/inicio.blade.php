@@ -48,6 +48,7 @@
   @include('hotel.modales.registrar')
   @include('hotel.modales.ver')
   @include('hotel.modales.editar')
+  @include('hotel.modales.pagar')
   <div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -76,5 +77,6 @@
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
   {{Html::script('assets/js/jquery.printarea.js')}}
+
   @include('hotel.scripts')
 @stop

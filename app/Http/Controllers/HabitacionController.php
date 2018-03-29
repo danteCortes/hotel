@@ -145,14 +145,15 @@ class HabitacionController extends Controller{
 
   }
 
-  public function buscar(Request $request){
-    $habitacion = \App\Habitacion::find($request->id);
+  public function buscar($id){
+    return Habitacion::with('edificio')->with('huespedes.persona')->where('id', $id)->first();
+    $habitacion = \App\Habitacion::find($id);
     $htmlEdificio = "<option value='".$habitacion->edificio_id."'>".$habitacion->edificio->nombre." (ACTUAL)</option>
       <option value=''>--SELECCIONAR EDIFICIO--</option>";
       foreach(\App\Edificio::all() as $edificio){
         $htmlEdificio .= "<option value='".$edificio->id."'>".$edificio->nombre."</option>";
       }
-    $huesped = \App\Huesped::where('habitacion_id', $request->id)
+    $huesped = \App\Huesped::where('habitacion_id', $id)
       ->where(function($query){
         $query->whereDate(\DB::raw("date(salida)"), '>=', \Carbon\Carbon::now()->format('Y-m-d'))
         ->orWhere('salida', null);

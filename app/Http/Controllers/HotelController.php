@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Traits\PersonaTrait;
+use App\Habitacion;
+use App\Huesped;
 
 class HotelController extends Controller{
 
@@ -66,7 +68,8 @@ class HotelController extends Controller{
             \DB::raw("concat(personas.nombres, ' ', personas.apellidos) as huesped"),
             'habitaciones.precio as precio',
             'habitaciones.televisor as televisor',
-            'huespedes.salida as salida'
+            'huespedes.salida as salida',
+            'huespedes.id as huesped_id'
             )
           ->distinct()
           ->offset($skip)
@@ -95,7 +98,8 @@ class HotelController extends Controller{
             \DB::raw("concat(personas.nombres, ' ', personas.apellidos) as huesped"),
             'habitaciones.precio as precio',
             'habitaciones.televisor as televisor',
-            'huespedes.salida as salida'
+            'huespedes.salida as salida',
+            'huespedes.id as huesped_id'
           )
           ->distinct()
           ->offset($skip)
@@ -148,7 +152,8 @@ class HotelController extends Controller{
           "huesped"=>$habitacion->huesped,
           "precio"=>number_format($habitacion->precio, 2, '.', ' '),
           "televisor"=>$habitacion->televisor,
-          "salida"=>$habitacion->salida
+          "salida"=>$habitacion->salida,
+          "huesped_id"=>$habitacion->huesped_id
         )
       );
       //Asignamos un grupo de datos al array datas
@@ -347,16 +352,25 @@ class HotelController extends Controller{
     $huesped = new \App\Huesped;
     $huesped->persona_id = $persona->id;
     $huesped->habitacion_id = $habitacion->id;
-    $huesped->inicio = \Carbon\Carbon::now()->format('Y-m-d');
+    $huesped->inicio = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
     $huesped->salida = $request->salida;
     $huesped->save();
+
+    $pago = new \App\Pago;
+    $pago->huesped_id = $huesped->id;
+    $pago->fecha = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+    $pago->concepto = mb_strtoupper('INGRESO AL HOTEL');
+    $pago->monto = $habitacion->precio;
+    $pago->save();
+    
     return redirect('hotel')->with('EL HUESPED SE REGISTRÓ CORRECTAMENTE EN LA HABITACIÓN '.$habitacion->numero);
   }
 
   public function buscarHuesped(Request $request){
     $habitacion = \App\Habitacion::find($request->id);
     $huesped = \App\Huesped::where('habitacion_id', $request->id)->where(function($query){
-      $query->where('salida', null)->orWhereDate(\DB::raw("date(salida)"), '>=', \Carbon\Carbon::now()->format('Y-m-d'));
+      $query->where('salida', null)->orWhereDate(\DB::raw("date(salida)"), '>=', \Carbon\Carbon::now()
+        ->format('Y-m-d'));
     })->first();
     if ($persona = \App\Persona::find($huesped->persona_id)) {
       return [$habitacion, $persona, $huesped, $habitacion->edificio];
@@ -383,6 +397,15 @@ class HotelController extends Controller{
     $huesped->save();
 
     return redirect('hotel')->with('correcto', 'EL HUESPED FUE ACTUALIZADO CON ÉXITO.');
+  }
+
+  public function habitacion($id){
+    return Habitacion::with('huespedes')->with('edificio')->where('id', $id)->first();
+  }
+
+  public function mostrarDeuda($id){
+    $huesped = Huesped::where('habitacion_id', $id)->latest('inicio')->first();
+    return $huesped;
   }
 
 }

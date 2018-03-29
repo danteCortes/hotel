@@ -18,4 +18,6 @@ class Habitacion extends Model{
     return $this->hasMany('\App\Huesped', 'habitacion_id');
   }
 
+  
+
 }

@@ -28,11 +28,11 @@
         "commands": function(column, row){
           reservar = "<button type='button' data-placement='bottom' title='Reservar' data-toggle='tooltip' class='btn btn-xs btn-warning command-reservar' data-row-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-flag'></span></button>";
-          registrar = "<button type='button' data-placement='bottom' title='Registrar' data-toggle='tooltip' class='btn btn-xs btn-primary command-registrar' data-row-id='"+row.id+"' style='margin:2px'>"+
+          registrar = "<button type='button' data-placement='bottom' title='Registrar' data-toggle='tooltip' class='btn btn-xs btn-primary command-registrar' data-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-plus'></span></button>";
-          ver  = "<button type='button' data-placement='bottom' title='Ver' data-toggle='tooltip' class='btn btn-xs btn-primary command-ver' data-row-id='"+row.id+"' style='margin:2px'>"+
+          ver  = "<button type='button' data-placement='bottom' title='Ver' data-toggle='tooltip' class='btn btn-xs btn-primary command-ver' data-huesped-id='"+row.huesped_id+"' style='margin:2px'>"+
           "<span class='fa fa-eye'></span></button>";
-          modificar = "<button type='button' data-placement='bottom' title='Modificar' data-toggle='tooltip' class='btn btn-xs btn-primary command-modificar' data-row-id='"+row.id+"' style='margin:2px'>"+
+          modificar = "<button type='button' data-placement='bottom' title='Modificar' data-toggle='tooltip' class='btn btn-xs btn-primary command-modificar' data-huesped-id='"+row.huesped_id+"' style='margin:2px'>"+
           "<span class='fa fa-edit'></span></button>";
           cambiar = "<button type='button' data-placement='bottom' title='Cambiar' data-toggle='tooltip' class='btn btn-xs btn-info command-cambiar' data-row-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-refresh'></span></button>";
@@ -52,6 +52,7 @@
         },
         "alertas": function(column, row){
           if (row.huesped) {
+            // la habitación tiene un huesped verificamos si son mas de las 6:00 am y si no se le a hecho una limpieza
             column.cssClass = "alerta";
           }else{
             column.cssClass = "";
@@ -60,55 +61,79 @@
         }
       }
     }).on("loaded.rs.jquery.bootgrid", function(){
-      setInterval(function(){
-        if ($(".alerta").hasClass('rojo')) {
-          $(".alerta").removeClass('rojo');
-        }else {
-          $(".alerta").addClass('rojo');
-        }
-      }, 500);
+      // setInterval(function(){
+      //   if ($(".alerta").hasClass('rojo')) {
+      //     $(".alerta").removeClass('rojo');
+      //   }else {
+      //     $(".alerta").addClass('rojo');
+      //   }
+      // }, 500);
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-registrar").on("click", function(e){
         $(".dni").val("");
         $(".nombres").val("");
         $(".apellidos").val("");
         $(".telefono").val("");
+        $(".precio").val("");
         $(".salida").val("");
-        $.post("{{url('habitacion/buscar')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
-          if (data[3] == null) {
-            $(".hab_numero").html(data[0]['numero']);
-            $(".edif_nombre").html(data[2]['nombre']);
-            $("#frmRegistrar").prop('action', "{{url('hotel/registrar')}}/" + data[0]['id']);
+        $.get(
+          "{{url('hotel/habitacion')}}/"+$(this).data("id"), 
+          function(habitacion, textStatus, xhr) {
+            $(".hab_numero").html(habitacion['numero']);
+            $(".edif_nombre").html(habitacion['edificio']['nombre']);
+            $("#frmRegistrarHuesped > div.modal-footer > input[type='hidden'][name='habitacion_id']").val(habitacion['id']);
+            $(".precio").val(parseFloat(habitacion['precio']).toFixed(2));
             $("#registrar").modal('show');
-          }else{
-            $("#numero_error").html(data[0]['numero']);
-            $("#edificio_error").html(data[2]['nombre']);
-            $("#error").modal('show');
           }
-        });
+        );
       }).end().find(".command-ver").on('click', function(e) {
-        $.post("{{url('hotel/buscar-huesped')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
-          $(".huesped").html(data[1]['nombres']+" "+data[1]['apellidos']);
-          $(".television").html(data[0]['televisor']);
-          $(".precio").html(data[0]['precio'].toFixed(2));
-          $(".inicio").html(data[2]['inicio']);
-          $(".salida").html(data[2]['salida']);
-          $(".hab_numero").html(data[0]['numero']);
-          $(".edif_nombre").html(data[3]['nombre']);
-          $("#ver").modal('show');
-        });
+        $.get(
+          "{{url('hotel/huesped')}}/"+$(this).data("huesped-id"),
+          function(huesped, textStatus, xhr) {
+            $(".huesped").html(huesped['persona']['nombres']+' '+huesped['persona']['apellidos']);
+            $(".television").html(huesped['habitacion']['televisor']);
+            $(".precio").html(parseFloat(huesped['habitacion']['precio']).toFixed(2));
+            $(".inicio").html(moment(huesped['inicio']).format('DD/MM/YYYY HH:mm A'));
+            if (huesped['salida']) {
+              $(".salida").html(moment(huesped['salida']).format('DD/MM/YYYY'));
+            }else {
+              $(".salida").empty();
+            }
+            $(".hab_numero").html(huesped['habitacion']['numero']);
+            $(".edif_nombre").html(huesped['habitacion']['edificio']['nombre']);
+            $("#ver").modal('show');
+          }
+        );
       }).end().find(".command-modificar").on('click', function(e) {
-        $.post("{{url('hotel/buscar-huesped')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
-          $(".dni").val(data[1]['dni']);
-          $(".nombres").val(data[1]['nombres']);
-          $(".apellidos").val(data[1]['apellidos']);
-          $(".telefono").val(data[1]['telefono']);
-          $(".salida").val(data[2]['salida']);
-          $(".hab_numero").html(data[0]['numero']);
-          $(".edif_nombre").html(data[3]['nombre']);
-          $("#frmEditar").prop('action', "{{url('hotel/modificar-huesped')}}/" + data[0]['id']);
-          $("#editar").modal('show');
-        });
+        $.get(
+          "{{url('hotel/huesped')}}/"+$(this).data("huesped-id"), 
+          function(huesped, textStatus, xhr) {
+            $(".dni").val(huesped['persona']['dni']);
+            $(".nombres").val(huesped['persona']['nombres']);
+            $(".apellidos").val(huesped['persona']['apellidos']);
+            $(".telefono").val(huesped['persona']['telefono']);
+            if (huesped['salida']) {
+              $(".salida").val(moment(huesped['salida']).format('DD/MM/YYYY'));
+            }else{
+              $(".salida").val("");
+            }
+            $(".hab_numero").html(huesped['habitacion']['numero']);
+            $(".edif_nombre").html(huesped['habitacion']['edificio']['nombre']);
+            $("#frmEditarHuesped > div.modal-footer > input[type='hidden'][name='habitacion_id']").val(huesped['habitacion']['id']);
+            $("#frmEditarHuesped").prop('action', "{{url('hotel/huesped')}}/" + huesped['id']);
+            $("#mdlEditarHuesped").modal('show');
+          }
+        );
+      }).end().find(".command-pagar").on('click', function(e) {
+        $.get("{{url('hotel/mostrar-deuda')}}/"+$(this).data("row-id"), 
+          function(habitacion, textStatus, xhr) {
+            
+            $(".hab_numero").html(habitacion['numero']);
+            $(".edif_nombre").html(habitacion['edificio']['nombre']);
+            $("#frmPagar").prop('action', "{{url('hotel/pagar')}}/" + habitacion['id']);
+            $("#pagar").modal('show');
+          }
+        );
       });
     });
 
@@ -116,7 +141,7 @@
       $("#imprimir-tabla").printArea();
     });
 
-    $('.moneda').mask("# ##0.00", {reverse: true});
+    $('.moneda').mask("###0.00", {reverse: true});
     $('.numero').mask("###", {reverse: true});
     $('.dni').mask("99999999", {reverse: true});
 

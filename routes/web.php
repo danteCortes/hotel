@@ -13,13 +13,22 @@
 
 Route::prefix('hotel')->group(function(){
   Route::get('/', 'HotelController@inicio');
+  Route::prefix('huesped')->group(function(){
+    Route::get('/{id}', 'HuespedController@buscar')->where('id', '[0-9]+');
+    Route::post('/', 'HuespedController@guardar')->name('huesped');
+    Route::put('/{id}', 'HuespedController@modificar')->where('id', '[0-9]+');
+  });
+  Route::prefix('habitacion')->group(function(){
+    Route::get('/{id}', 'HabitacionController@buscar')->where('id', '[0-9]+');
+  });
   Route::post('listar', 'HotelController@listar');
   Route::get('edificio/{id}', 'HotelController@edificio');
   Route::post('listar-edificio/{id}', 'HotelController@listarEdificio');
   Route::post('registrar/{id}', 'HotelController@registrar');
   Route::post('buscar-huesped', 'HotelController@buscarHuesped');
   Route::put('modificar-huesped/{id}', 'HotelController@modificarHuesped');
-
+  Route::get('habitacion/{id}', 'HotelController@habitacion');
+  Route::get('mostrar-deuda/{id}', 'HotelController@mostrarDeuda');
 });
 
 /* RUTAS PARA GESTIONAR LAS HABITACIONES */

@@ -13,4 +13,12 @@ class Huesped extends Model{
   public function persona(){
     return $this->belongsTo('\App\Persona');
   }
+
+  public function habitacion(){
+    return $this->belongsTo('App\Habitacion');
+  }
+
+  public function pagos(){
+    return $this->hasMany('App\Pago');
+  }
 }

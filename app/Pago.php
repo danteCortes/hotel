@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pago extends Model{
 
+  public $timestamps = false;
+
   public function cierre(){
     return $this->belongsTo('\App\Cierre');
   }
