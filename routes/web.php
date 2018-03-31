@@ -21,6 +21,9 @@ Route::prefix('hotel')->group(function(){
   Route::prefix('habitacion')->group(function(){
     Route::get('/{id}', 'HabitacionController@buscar')->where('id', '[0-9]+');
   });
+  Route::prefix('pago')->group(function(){
+    Route::post('/', 'PagoController@guardar')->name('pago');
+  });
   Route::post('listar', 'HotelController@listar');
   Route::get('edificio/{id}', 'HotelController@edificio');
   Route::post('listar-edificio/{id}', 'HotelController@listarEdificio');

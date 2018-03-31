@@ -38,7 +38,7 @@
           "<span class='fa fa-refresh'></span></button>";
           limpiar = "<button type='button' data-placement='bottom' title='Limpiar' data-toggle='tooltip' class='btn btn-xs btn-success command-limpiar' data-row-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-leaf'></span></button>";
-          pagar = "<button type='button' data-placement='bottom' title='Pagar' data-toggle='tooltip' class='btn btn-xs btn-success command-pagar' data-row-id='"+row.id+"' style='margin:2px'>"+
+          pagar = "<button type='button' data-placement='bottom' title='Pagar' data-toggle='tooltip' class='btn btn-xs btn-success command-pagar' data-huesped-id='"+row.huesped_id+"' style='margin:2px'>"+
           "<span class='fa fa-money'></span></button>";
           pagos = "<button type='button' data-placement='bottom' title='Ver Pagos' data-toggle='tooltip' class='btn btn-xs btn-success command-verpagos' data-huesped-id='"+row.huesped_id+"' style='margin:2px'>"+
           "<span class='fa fa-money'></span></button>";
@@ -146,13 +146,13 @@
           }
         );
       }).end().find(".command-pagar").on('click', function(e) {
-        $.get("{{url('hotel/mostrar-deuda')}}/"+$(this).data("row-id"), 
-          function(habitacion, textStatus, xhr) {
-            
-            $(".hab_numero").html(habitacion['numero']);
-            $(".edif_nombre").html(habitacion['edificio']['nombre']);
-            $("#frmPagar").prop('action', "{{url('hotel/pagar')}}/" + habitacion['id']);
-            $("#pagar").modal('show');
+        $.get("{{url('hotel/huesped')}}/"+$(this).data("huesped-id"), 
+          function(huesped, textStatus, xhr) {
+            $(".hab_numero").html(huesped['habitacion']['numero']);
+            $(".edif_nombre").html(huesped['habitacion']['edificio']['nombre']);
+            $("#frmPagar > div.modal-footer > input[type='hidden'][name='huesped_id']").val(huesped['id']);
+            $("#frmPagar").prop('action', "{{url('hotel/pago')}}");
+            $("#mdlPagar").modal('show');
           }
         );
       });
