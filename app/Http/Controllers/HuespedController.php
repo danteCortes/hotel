@@ -7,6 +7,7 @@ use App\Huesped;
 use App\Persona;
 use App\Http\Traits\PersonaTrait;
 use App\Http\Traits\HuespedTrait;
+use App\Http\Traits\PagoTrait;
 use Carbon\Carbon;
 
 class HuespedController extends Controller{
@@ -24,6 +25,9 @@ class HuespedController extends Controller{
     $datosHuesped = ['persona_id'=>$persona->id, 'habitacion_id'=>$request->habitacion_id, 
       'inicio'=>Carbon::now()->format('Y-m-d H:i:s'), 'salida'=>$request->salida];
     $huesped = HuespedTrait::guardar($datosHuesped);
+
+    PagoTrait::guardar(['huesped_id'=>$huesped->id, 'fecha'=>$huesped->inicio, 'concepto'=>'INGRESO AL HOTEL',
+      'monto'=>$huesped->habitacion->precio]);
 
     return redirect()->back()->with('correcto', 'EL HUESPED '.$huesped->persona->nombres.' '.
       $huesped->persona->apellidos.' FUE REGISTRADO EN LA HABITACION '.$huesped->habitacion->numero.

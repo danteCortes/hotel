@@ -40,7 +40,7 @@
           "<span class='fa fa-leaf'></span></button>";
           pagar = "<button type='button' data-placement='bottom' title='Pagar' data-toggle='tooltip' class='btn btn-xs btn-success command-pagar' data-row-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-money'></span></button>";
-          pagos = "<button type='button' data-placement='bottom' title='Ver Pagos' data-toggle='tooltip' class='btn btn-xs btn-success command-verpagos' data-row-id='"+row.id+"' style='margin:2px'>"+
+          pagos = "<button type='button' data-placement='bottom' title='Ver Pagos' data-toggle='tooltip' class='btn btn-xs btn-success command-verpagos' data-huesped-id='"+row.huesped_id+"' style='margin:2px'>"+
           "<span class='fa fa-money'></span></button>";
           observaciones = "<button type='button' data-placement='bottom' title='Observaciones' data-toggle='tooltip' class='btn btn-xs btn-warning command-delete' data-row-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-warning'></span></button>";
@@ -122,6 +122,27 @@
             $("#frmEditarHuesped > div.modal-footer > input[type='hidden'][name='habitacion_id']").val(huesped['habitacion']['id']);
             $("#frmEditarHuesped").prop('action', "{{url('hotel/huesped')}}/" + huesped['id']);
             $("#mdlEditarHuesped").modal('show');
+          }
+        );
+      }).end().find(".command-verpagos").on('click', function(e) {
+        $.get("{{url('hotel/huesped')}}/"+$(this).data("huesped-id"), 
+          function(huesped, textStatus, xhr) {
+            $(".hab_numero").html(huesped['habitacion']['numero']);
+            $(".edif_nombre").html(huesped['habitacion']['edificio']['nombre']);
+            filas = `<tr>
+              <th class="text-center">FECHA Y HORA</th>
+              <th class="text-center">CONCEPTO</th>
+              <th class="text-center">MONTO</th>
+            </tr>`;
+            $.each(huesped['pagos'], function (clave, pago) { 
+              filas += `<tr>
+                <td class="text-left">${moment(pago['fecha']).format('DD/MM/YYYY HH:mm A')}</td>
+                <td class="text-left">${pago['concepto']}</td>
+                <td class="text-right">${parseFloat(pago['monto']).toFixed(2)}</td>
+              </tr>`;
+            });
+            $("#tblMostrarPagos").html(filas);
+            $("#mdlMostrarPagos").modal('show');
           }
         );
       }).end().find(".command-pagar").on('click', function(e) {
