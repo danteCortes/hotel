@@ -84,7 +84,7 @@
     <hr>
     <div class="tab-content">
       <div id="login" class="tab-pane active">
-        {{Form::open(['url'=>'ingresar'])}}
+        {{Form::open(['url'=>'ingresar', 'autocomplete'=>'off'])}}
           <p class="text-muted text-center">
             Ingrese su DNI y password
           </p>

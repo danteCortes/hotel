@@ -16,7 +16,7 @@
       </div>
       <div class="modal-footer" style="background-color:#385a94">
         <button type="button" class="btn btn-default" data-dismiss="modal">
-          <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
+          <span class="glyphicon glyphicon-ban-circle"></span> Cerrar</button>
       </div>
     </div>
   </div>
