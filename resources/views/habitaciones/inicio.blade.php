@@ -2,11 +2,14 @@
 
 @section('estilos')
 {{Html::style('bootgrid/jquery.bootgrid.min.css')}}
+{{Html::style('assets/css/toastr.css')}}
 @stop
 
 @section('titulo')
   Habitaciones
-  @include('habitaciones.nuevo.frmNuevo')
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevo">
+    <span class="glyphicon glyphicon-plus"></span> Nuevo
+  </button>
 @stop
 
 @section('contenido')
@@ -26,8 +29,12 @@
           </thead>
         </table>
       </div>
+      <pre>
+        @{{$data}}
+      </pre>
     </div>
   </div>
+  @include('habitaciones.mdlNuevo')
   <div class="modal fade" id="editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -108,5 +115,55 @@
 
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
-  @include('habitaciones.inicio.scripts')
+  {{Html::script('assets/js/vue.js')}}
+  {{Html::script('assets/js/axios.js')}}
+  {{Html::script('assets/js/toastr.js')}}
+  @include('habitaciones.scripts')
+  <script>
+    new Vue({
+      el: "#wrap",
+      data: {
+        nuevoEdificio: {
+          numero: '',
+          piso: null,
+          televisor: '',
+          precio: '',
+          edificio_id: ''
+        },
+        errores: [],
+        edificios: []
+      },
+      created: function(){
+        this.llenarEdificios();
+      },
+      methods:{
+        llenarEdificios: function(){
+          axios.get("../administrador/edificio/todos").then(response => {
+            this.edificios = response.data;
+          });
+        },
+        guardarHabitacion: function(){
+          $("#fade").modal("show");
+          $("#nuevo").modal("hide");
+          axios.post("../administrador/habitacion", this.nuevoEdificio).then(response => {
+            $("#tblHabitaciones").bootgrid("reload");
+            this.nuevoEdificio = {
+              numero: '',
+              piso: null,
+              televisor: '',
+              precio: '',
+              edificio_id: ''
+            };
+            this.errores = [];
+            toastr.success("LA HABITACIÓN FUE CREADA CON ÉXITO");
+            $("#fade").modal("hide");
+          }).catch(errores => {
+            this.errores = errores.response.data;
+            $("#nuevo").modal("show");
+            $("#fade").modal("hide");
+          });
+        }
+      }
+    })
+  </script>
 @stop

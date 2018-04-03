@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Edificio;
 
 class EdificioController extends Controller{
 
@@ -137,6 +138,10 @@ class EdificioController extends Controller{
   public function eliminar($id){
     $edificio = \App\Edificio::find($id);
     $edificio->delete();
+  }
+
+  public function todos(){
+    return Edificio::with('habitaciones')->get();
   }
 
 

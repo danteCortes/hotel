@@ -26,18 +26,6 @@ Route::prefix('hotel')->group(function(){
   Route::get('mostrar-deuda/{id}', 'HotelController@mostrarDeuda');
 });
 
-/* RUTAS PARA GESTIONAR LAS HABITACIONES */
-Route::prefix('habitacion')->group(function(){
-  Route::get('/', 'HabitacionController@inicio');
-  Route::post('/', 'HabitacionController@guardar');
-  Route::post('listar', 'HabitacionController@listar');
-  Route::post('buscar', 'HabitacionController@buscar');
-  Route::put('/{id}', 'HabitacionController@modificar');
-  Route::delete('/{id}', 'HabitacionController@eliminar');
-});
-
-/* RUTAS PARA GESTIONAR LOS EDIFICIOS */
-
 
 Route::get('salir', 'LoginController@salir');
 
@@ -67,10 +55,19 @@ Route::prefix('administrador')->group(function(){
   });
   Route::prefix('edificio')->group(function(){
     Route::get('/', 'EdificioController@inicio');
+    Route::get('/todos', 'EdificioController@todos');
     Route::post('/', 'EdificioController@guardar')->name('edificio');
     Route::post('listar', 'EdificioController@listar');
     Route::get('/{id}', 'EdificioController@buscar')->where('id', '[0-9]+');
     Route::put('/{id}', 'EdificioController@modificar')->where('id', '[0-9]+');
     Route::delete('/{id}', 'EdificioController@eliminar')->where('id', '[0-9]+');
+  });
+  Route::prefix('habitacion')->group(function(){
+    Route::get('/', 'HabitacionController@inicio');
+    Route::post('/', 'HabitacionController@guardar');
+    Route::post('listar', 'HabitacionController@listar');
+    Route::post('buscar', 'HabitacionController@buscar');
+    Route::put('/{id}', 'HabitacionController@modificar');
+    Route::delete('/{id}', 'HabitacionController@eliminar');
   });
 });

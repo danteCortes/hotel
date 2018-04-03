@@ -3,23 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Habitacion;
+use Validator;
 
 class HabitacionController extends Controller{
 
   public function inicio(){
-    return view('habitaciones.inicio.inicio');
+    return view('habitaciones.inicio');
   }
 
   public function guardar(Request $request){
-    $habitacion = new \App\Habitacion;
+    $this->validate($request, [
+      'edificio_id'=>'required|exists:edificios,id',
+      'numero'=>'required|integer',
+      'precio'=>'required|numeric',
+      'piso'=>'required|integer',
+      'televisor'=>'nullable'
+    ]);
+    $habitacion = new Habitacion;
     $habitacion->numero = $request->numero;
     $habitacion->piso = $request->piso;
     $habitacion->televisor = mb_strtoupper($request->televisor);
     $habitacion->precio = str_replace(' ', '', $request->precio);
     $habitacion->edificio_id = $request->edificio_id;
     $habitacion->save();
-    return redirect('habitacion')->with('correcto', 'LA HABITACION '.$habitacion->numero.' EN EL EDIFICIO '.
-    $habitacion->edificio->nombre.' FUE CREADO CON ÉXITO');
   }
 
   public function listar(Request $request){

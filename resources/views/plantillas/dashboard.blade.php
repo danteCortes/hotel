@@ -64,7 +64,7 @@
 
 <body class="  " style="background-color:#fbba00">
   <div class="fade" id="fade"></div>
-  <div class="" id="wrap" style="background-color:#fbba00" id="app">
+  <div class="" id="wrap" style="background-color:#fbba00">
     <div id="top" style="background-color:#fbba00">
       <!-- .navbar -->
       <nav class="navbar navbar-inverse navbar-static-top" style="background-color:#407994; border-top:#407994;">
