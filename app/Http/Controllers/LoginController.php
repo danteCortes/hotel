@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\PersonaTrait;
+use App\Http\Traits\UsuarioTrait;
+use App\Persona;
 //use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller{
@@ -23,6 +26,20 @@ class LoginController extends Controller{
     return view('login.login');
   }
 
+  public function primero(Request $request){
+
+    $datosPersona = ['dni'=>$request->dni, 'nombres'=>$request->nombres, 'apellidos'=>$request->apellidos,
+      'direccion'=>'', 'telefono'=>''];
+    if (!$persona = Persona::where('dni', $request->dni)->first()) {
+      $persona = PersonaTrait::guardar($datosPersona);
+    }
+
+    $datosUsuario = ['persona_dni'=>$persona->dni, 'tipo'=>1];
+    $usuario = UsuarioTrait::guardar($datosUsuario);
+
+    return redirect('login')->with('correcto', 'AHORA PUEDE INGRESAR AL SISTEMA CON SU DNI');
+  }
+
   public function ingresar(Request $request){
 
     Validator::make($request->all(), [
@@ -31,7 +48,7 @@ class LoginController extends Controller{
     ])->validate();
 
     if (Auth::attempt(['persona_dni' => $request->dni, 'password' => $request->password], $request->recordarme)) {
-        return redirect('verificar-tipo');
+      return redirect('login/verificar-tipo');
     }
 
     return redirect('login')->with('error', 'EL PASSWORD ES INCORRECTO, VUELVA A INTENTARLO');

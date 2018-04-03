@@ -11,6 +11,8 @@ class Usuario extends Authenticatable{
 
   public $timestamps = false;
 
+  protected $fillable = ['persona_dni', 'password', 'tipo'];
+
   public function persona(){
     return $this->belongsTo('\App\Persona', 'persona_dni', 'dni');
   }

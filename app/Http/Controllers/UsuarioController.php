@@ -196,4 +196,8 @@ class UsuarioController extends Controller{
   public function cajaCerrada(){
     return view('usuarios.cajaCerrada');
   }
+
+  public function inicio(){
+    return Usuario::get();
+  }
 }

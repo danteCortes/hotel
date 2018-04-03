@@ -15,12 +15,12 @@ Administrador
   </a>
 </li>
 <li class="">
-  <a href="{{url('edificio')}}">
+  <a href="{{url('administrador/edificio')}}">
     <i class="fa fa-building"></i><span class="link-title">&nbsp;Edificios</span>
   </a>
 </li>
 <li class="">
-  <a href="{{url('habitacion')}}">
+  <a href="{{url('administrador/habitacion')}}">
     <i class="fa fa-hotel"></i><span class="link-title">&nbsp;Habitaciones</span>
   </a>
 </li>

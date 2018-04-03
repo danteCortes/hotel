@@ -37,7 +37,7 @@
           id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
         };
       },
-      url: "{{url('edificio/listar')}}",
+      url: "{{url('administrador/edificio/listar')}}",
       formatters: {
         "commands": function(column, row){
           return "<button type='button' class='btn btn-xs btn-warning command-edit' data-row-id='"+row.id+"' style='margin:2px'>"+
@@ -49,19 +49,61 @@
     }).on("loaded.rs.jquery.bootgrid", function(){
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-edit").on("click", function(e){
-        $.post("{{url('edificio/buscar')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
-          $(".nombre").val(data['nombre']);
-          $(".ubicacion").val(data['ubicacion']);
-          $("#frmEditarEdificio").prop('action', "{{url('edificio')}}/" + data['id']);
-          $("#editar").modal('show');
-        });
+        $.get(
+          "{{url('administrador/edificio')}}/"+$(this).data("row-id"), 
+          function(data, textStatus, xhr) {
+            $(".nombre").val(data['nombre']);
+            $(".ubicacion").val(data['ubicacion']);
+            $("#edificio_id").val(data['id']);
+            $("#frmEditarEdificio").prop('action', "{{url('administrador/edificio')}}/" + data['id']);
+            $("#editar").modal('show');
+          }
+        );
       }).end().find(".command-delete").on('click', function(e) {
-        $.post("{{url('edificio/buscar')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
-          $(".nombre").html(data['nombre']);
-          $("#frmEliminarEdificio").prop('action', "{{url('edificio')}}/" + data['id']);
-          $("#eliminar").modal('show');
-        });
+        $.get(
+          "{{url('administrador/edificio')}}/"+$(this).data("row-id"), 
+          function(data, textStatus, xhr) {
+            $(".nombre").html(data['nombre']);
+            $("#frmEliminarEdificio > div.modal-footer > input[type='hidden'][name='edificio_id']").val(data['id']);
+            $("#frmEliminarEdificio").prop('action', "{{url('edificio')}}/" + data['id']);
+            $("#eliminar").modal('show');
+          }
+        );
       });
+    });
+
+    $("#frmEditarEdificio").submit(function(event){
+      event.preventDefault();
+      $("#editar").modal("hide");
+      $("#fade").modal("show");
+      $.post("{{url('administrador/edificio')}}/"+$("#edificio_id").val(),
+        {
+          nombre: $("#frmEditarEdificio > div.modal-body > div > div > div > input[name='nombre']").val(),
+          ubicacion: $("#frmEditarEdificio > div.modal-body > div > div > div > input[name='ubicacion']").val(),
+          _method: 'put'
+        },
+        function (data, textStatus, jqXHR) {
+          $("#tblEdificios").bootgrid("reload");
+          $("#fade").modal("hide");
+          toastr.success("EL EDIFICIO FUE MODIFICADO CON ÉXITO");
+        }
+      );
+    });
+
+    $("#frmEliminarEdificio").submit(function(event){
+      event.preventDefault();
+      $("#eliminar").modal("hide");
+      $("#fade").modal("show");
+      $.post("{{url('administrador/edificio')}}/"+$("#frmEliminarEdificio > div.modal-footer > input[type='hidden'][name='edificio_id']").val(),
+        {
+          _method: 'delete'
+        },
+        function (data, textStatus, jqXHR) {
+          $("#tblEdificios").bootgrid("reload");
+          $("#fade").modal("hide");
+          toastr.success("EL EDIFICIO FUE ELIMINADO CON ÉXITO");
+        }
+      );
     });
 
   });

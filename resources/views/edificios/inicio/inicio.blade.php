@@ -2,11 +2,12 @@
 
 @section('estilos')
 {{Html::style('bootgrid/jquery.bootgrid.min.css')}}
+{{Html::style('assets/css/toastr.css')}}
 @stop
 
 @section('titulo')
   Edificios
-  @include('edificios.nuevo.frmNuevo')
+  @include('edificios.inicio.frmNuevo')
 @stop
 
 @section('contenido')
@@ -30,7 +31,7 @@
   <div class="modal fade" id="editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        {{Form::open(['id'=>'frmEditarEdificio', 'method'=>'put'])}}
+        {{Form::open(['id'=>'frmEditarEdificio', 'method'=>'put', 'autocomplete'=>'off'])}}
         {{ csrf_field() }}
         <div class="modal-header" style="background-color:#385a94; color:#fff;">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -40,16 +41,18 @@
           <div class="panel" style="background-color:#bd7406">
             <div class="panel-body">
               <div class="form-group">
-                <input type="text" class="form-control mayuscula input-sm nombre" placeholder="NOMBRE" name="nombre"
-                  required>
+                <input type="text" class="form-control mayuscula input-sm nombre" placeholder="NOMBRE" 
+                  name="nombre" required>
               </div>
               <div class="form-group">
-                <input type="text" class="form-control mayuscula input-sm ubicacion" placeholder="UBICACIÓN" name="ubicacion">
+                <input type="text" class="form-control mayuscula input-sm ubicacion" placeholder="UBICACIÓN" 
+                  name="ubicacion">
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer" style="background-color:#385a94">
+          {{Form::hidden('edificio_id', null, ['id'=>'edificio_id'])}}
           <button type="button" class="btn btn-default" data-dismiss="modal">
             <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
           <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Modificar</button>
@@ -78,6 +81,7 @@
           </div>
         </div>
         <div class="modal-footer" style="background-color:#bb0000">
+          {{Form::hidden('edificio_id', null)}}
           <button type="button" class="btn btn-default" data-dismiss="modal">
             <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
           <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Eliminar</button>
@@ -90,5 +94,39 @@
 
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
+  {{Html::script('assets/js/vue.js')}}
+  {{Html::script('assets/js/axios.js')}}
+  {{Html::script('assets/js/toastr.js')}}
   @include('edificios.inicio.scripts')
+  <script>
+    new Vue({
+      el: '#top',
+      data: {
+        nombre: '',
+        ubicacion: '',
+        errors: [],
+        edificio: {id: '', nombre: '', ubicacion: ''}
+      },
+      methods: {
+        guardarEdificio: function(){
+          $("#fade").modal("show");
+          $("#nuevo").modal("hide");
+          axios.post("{{url('administrador/edificio/')}}", {
+            nombre: this.nombre,
+            ubicacion: this.ubicacion
+          }).then(response => {
+            this.nombre = '';
+            this.ubicacion = '';
+            $("#tblEdificios").bootgrid("reload");
+            $("#fade").modal("hide");
+            toastr.success("EL EDIFICIO FUE REGISTRADO CON ÉXITO.");
+          }).catch(error => {
+            this.errors = error.response.data;
+            $("#nuevo").modal("show");
+            $("#fade").modal("hide");
+          });
+        }
+      }
+    })
+  </script>
 @stop

@@ -15,7 +15,6 @@ class EdificioController extends Controller{
     $edificio->nombre = mb_strtoupper($request->nombre);
     $edificio->ubicacion = mb_strtoupper($request->ubicacion);
     $edificio->save();
-    return redirect('edificio')->with('correcto', 'EL EDIFICIO '.$edificio->nombre.' FUE CREADO CON ÉXITO');
   }
 
   public function listar(Request $request){
@@ -133,13 +132,11 @@ class EdificioController extends Controller{
     $edificio->nombre = mb_strtoupper($request->nombre);
     $edificio->ubicacion = mb_strtoupper($request->ubicacion);
     $edificio->save();
-    return redirect('edificio')->with('correcto', 'EL EDIFICIO '.$edificio->nombre.' FUE MODIFICADO CON ÉXITO');
   }
 
   public function eliminar($id){
     $edificio = \App\Edificio::find($id);
     $edificio->delete();
-    return redirect('edificio')->with('info', 'EL EDIFICIO '.$edificio->nombre.' FUE ELIMINADO CON ÉXITO');
   }
 
 
