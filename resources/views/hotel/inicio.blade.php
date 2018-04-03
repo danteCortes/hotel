@@ -50,6 +50,7 @@
   @include('hotel.modales.editar')
   @include('hotel.modales.mdlMostrarPagos')
   @include('hotel.modales.pagar')
+  @include('hotel.modales.mdlLimpiar')
   <div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

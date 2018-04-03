@@ -24,6 +24,9 @@ Route::prefix('hotel')->group(function(){
   Route::prefix('pago')->group(function(){
     Route::post('/', 'PagoController@guardar')->name('pago');
   });
+  Route::prefix('limpieza')->group(function(){
+    Route::post('/', 'LimpiezaController@guardar')->name('limpieza');
+  });
   Route::post('listar', 'HotelController@listar');
   Route::get('edificio/{id}', 'HotelController@edificio');
   Route::post('listar-edificio/{id}', 'HotelController@listarEdificio');

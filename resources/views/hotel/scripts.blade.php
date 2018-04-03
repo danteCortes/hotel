@@ -36,7 +36,7 @@
           "<span class='fa fa-edit'></span></button>";
           cambiar = "<button type='button' data-placement='bottom' title='Cambiar' data-toggle='tooltip' class='btn btn-xs btn-info command-cambiar' data-row-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-refresh'></span></button>";
-          limpiar = "<button type='button' data-placement='bottom' title='Limpiar' data-toggle='tooltip' class='btn btn-xs btn-success command-limpiar' data-row-id='"+row.id+"' style='margin:2px'>"+
+          limpiar = "<button type='button' data-placement='bottom' title='Limpiar' data-toggle='tooltip' class='btn btn-xs btn-success command-limpiar' data-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-leaf'></span></button>";
           pagar = "<button type='button' data-placement='bottom' title='Pagar' data-toggle='tooltip' class='btn btn-xs btn-success command-pagar' data-huesped-id='"+row.huesped_id+"' style='margin:2px'>"+
           "<span class='fa fa-money'></span></button>";
@@ -45,7 +45,11 @@
           observaciones = "<button type='button' data-placement='bottom' title='Observaciones' data-toggle='tooltip' class='btn btn-xs btn-warning command-delete' data-row-id='"+row.id+"' style='margin:2px'>"+
           "<span class='fa fa-warning'></span></button>";
           if (row.huesped) {
-            return ver + modificar + cambiar + limpiar + pagar + pagos + observaciones;
+            if (row.limpieza) {
+              return ver + modificar + cambiar + pagar + pagos + observaciones;
+            }else{
+              return ver + modificar + cambiar + limpiar + pagar + pagos + observaciones;
+            }
           }else{
             return registrar + reservar;
           }
@@ -151,8 +155,16 @@
             $(".hab_numero").html(huesped['habitacion']['numero']);
             $(".edif_nombre").html(huesped['habitacion']['edificio']['nombre']);
             $("#frmPagar > div.modal-footer > input[type='hidden'][name='huesped_id']").val(huesped['id']);
-            $("#frmPagar").prop('action', "{{url('hotel/pago')}}");
             $("#mdlPagar").modal('show');
+          }
+        );
+      }).end().find(".command-limpiar").on('click', function(e) {
+        $.get("{{url('hotel/habitacion')}}/"+$(this).data("id"), 
+          function(habitacion, textStatus, xhr) {
+            $(".hab_numero").html(habitacion['numero']);
+            $(".edif_nombre").html(habitacion['edificio']['nombre']);
+            $("#frmLimpiar > input[type='hidden'][name='habitacion_id']").val(habitacion['id']);
+            $("#mdlLimpiar").modal('show');
           }
         );
       });

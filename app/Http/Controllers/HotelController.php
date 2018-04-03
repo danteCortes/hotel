@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Traits\PersonaTrait;
 use App\Habitacion;
 use App\Huesped;
+use Carbon\Carbon;
 
 class HotelController extends Controller{
 
@@ -59,8 +60,14 @@ class HotelController extends Controller{
         $habitaciones = \App\Habitacion::join('edificios', 'edificios.id', '=', 'habitaciones.edificio_id')
           ->leftJoin('huespedes', 'huespedes.habitacion_id', '=', 'habitaciones.id')
           ->leftJoin('personas', 'personas.id', '=', 'huespedes.persona_id')
-          ->where('huespedes.salida', null)
-          ->orWhere(\DB::raw('date(huespedes.salida)'), '>=', \Carbon\Carbon::now()->format('Y-m-d'))
+          ->leftJoin('limpiezas', 'limpiezas.habitacion_id', '=', 'habitaciones.id')
+          ->where(function($consulta){
+            $consulta->where('huespedes.salida', null)
+            ->orWhere(\DB::raw('date(huespedes.salida)'), '>=', \Carbon\Carbon::now()->format('Y-m-d'));
+          })
+          ->orWhere(function($consulta){
+            $consulta->orWhereDate('limpiezas.fecha', '=', Carbon::now()->format('Y-m-d'));
+          })
           ->select(
             'habitaciones.id as id',
             'habitaciones.numero as numero',
