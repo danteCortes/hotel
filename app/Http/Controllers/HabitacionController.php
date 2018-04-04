@@ -187,4 +187,8 @@ class HabitacionController extends Controller{
     $habitacion->delete();
   }
 
+  public function todos(){
+    return Habitacion::with('edificio')->with('huespedes.persona')->orderBy('edificio_id')->get();
+  }
+
 }

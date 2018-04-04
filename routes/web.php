@@ -64,10 +64,11 @@ Route::prefix('administrador')->group(function(){
   });
   Route::prefix('habitacion')->group(function(){
     Route::get('/', 'HabitacionController@inicio');
-    Route::get('/{id}', 'HabitacionController@buscar');
+    Route::get('/{id}', 'HabitacionController@buscar')->where('id', '[0-9]+');
+    Route::get('/todos', 'HabitacionController@todos');
     Route::post('/', 'HabitacionController@guardar');
     Route::post('listar', 'HabitacionController@listar');
-    Route::put('/{id}', 'HabitacionController@modificar');
-    Route::delete('/{id}', 'HabitacionController@eliminar');
+    Route::put('/{id}', 'HabitacionController@modificar')->where('id', '[0-9]+');
+    Route::delete('/{id}', 'HabitacionController@eliminar')->where('id', '[0-9]+');
   });
 });

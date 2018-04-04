@@ -1,4 +1,41 @@
 <script type="text/javascript">
+
+  new Vue({
+    el: '#wrap',
+    created: function(){
+      this.obtenerhabitaciones();
+    },
+    data: {
+      habitaciones: [],
+      habitacion: {
+        id: '',
+        numero: '',
+        edificio_id: '',
+        televisor: '',
+        precio: '',
+        piso: '',
+        edificio: {
+          id: '',
+          nombre: '',
+          ubicacion: ''
+        },
+        huespedes: []
+      }
+    },
+    methods: {
+      obtenerhabitaciones: function(){
+        axios.get("../administrador/habitacion/todos").then(response=>{
+          this.habitaciones = response.data;
+        });
+      },
+      mostrarFrmRegistrar: function(habitacion){
+        this.habitacion = habitacion;
+        $("#registrar").modal("show");
+      }
+    }
+  })
+
+
   $(document).ready(function() {
 
     $.ajaxSetup({
@@ -7,7 +44,7 @@
       }
     });
 
-    var grid = $("#tblHabitaciones").bootgrid({
+    var grid = $("#tblHabitaciones-probar").bootgrid({
       labels: {
         all: "todos",
         infos: "",
@@ -168,10 +205,6 @@
           }
         );
       });
-    });
-
-    $(".imprimir").click(function (){
-      $("#imprimir-tabla").printArea();
     });
 
     $('.moneda').mask("###0.00", {reverse: true});

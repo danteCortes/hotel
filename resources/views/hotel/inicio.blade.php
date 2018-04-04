@@ -29,19 +29,36 @@
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <div class="table-responsive" id="imprimir-tabla">
-        <table class="table table-hover table-condensed table-bordered" id="tblHabitaciones">
+        <table class="table table-hover table-condensed table-bordered table-striped" id="tblHabitaciones">
           <thead>
             <tr class="info">
-              <th data-column-id="numero" data-formatter="alertas" data-width="77px;">Numero</th>
-              <th data-column-id="edificio" data-order="asc">Edificio</th>
+              <th data-column-id="numero" data-formatter="alertas" data-width="77px;" v-bind:style="{width: '80px'}">Numero</th>
+              <th data-column-id="edificio" data-order="asc" v-bind:style="{width: '100px'}">Edificio</th>
               <th data-column-id="huesped">Huesped</th>
-              <th data-column-id="televisor">Televisor</th>
-              <th data-column-id="precio">Precio</th>
-              <th data-column-id="commands" data-formatter="commands" data-sortable="false" data-width="207px;">Operaciones</th>
+              <th data-column-id="televisor" v-bind:style="{width: '100px'}">Televisor</th>
+              <th data-column-id="precio" v-bind:style="{width: '70px'}">Precio</th>
+              <th data-column-id="commands" data-formatter="commands" data-sortable="false" data-width="207px;" v-bind:style="{width: '120px'}">Operaciones</th>
             </tr>
           </thead>
+          <tbody>
+            <tr v-for="habitacion in habitaciones">
+              <td class="text-center">@{{habitacion.numero}}</td>
+              <td class="text-left">@{{habitacion.edificio.nombre}}</td>
+              <td class="text-left"></td>
+              <td class="text-left">@{{habitacion.televisor}}</td>
+              <td class="text-right">@{{habitacion.precio.toFixed(2)}}</td>
+              <td class="text-center">
+                <button class="btn btn-primary btn-xs" data-toggle="tooltip" title="Registrar" @click="mostrarFrmRegistrar(habitacion)">
+                  <span class="fa fa-plus"></span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
+      <pre>
+        @{{$data}}
+      </pre>
       <button type="button" class="btn btn-primary imprimir">Imprimir</button>
     </div>
   </div>
@@ -79,6 +96,7 @@
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
   {{Html::script('assets/js/jquery.printarea.js')}}
-
+  {{Html::script('assets/js/vue.js')}}
+  {{Html::script('assets/js/axios.js')}}
   @include('hotel.scripts')
 @stop

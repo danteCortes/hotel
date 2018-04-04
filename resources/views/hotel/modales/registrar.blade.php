@@ -4,9 +4,11 @@
       {{Form::open(['route'=>'huesped', 'id'=>'frmRegistrarHuesped', 'autocomplete'=>'off'])}}
       {{ csrf_field() }}
       <div class="modal-header" style="background-color:#385a94; color:#fff;">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">REGISTRAR HUESPED HABITACIÓN <strong class="hab_numero"></strong>
-        EDIFICIO <strong class="edif_nombre"></strong> </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">REGISTRAR HUESPED HABITACIÓN 
+          <strong ></strong> EDIFICIO <strong ></strong>
+        </h4>
       </div>
       <div class="modal-body" style="background-color:#e69c2d">
         <div class="panel" style="background-color:#bd7406">
@@ -28,7 +30,7 @@
             </div>
             <div class="form-group">
               <input type="text" class="form-control input-sm precio" placeholder="PRECIO" name="precio"
-              readonly>
+              readonly v-model="habitacion.precio">
             </div>
             <div class="form-group">
               <input type="text" class="form-control input-sm fecha" placeholder="SALIDA" name="salida">
