@@ -1,4 +1,17 @@
 <script type="text/javascript">
+  function llenarEdificiosEditar(id, callback){
+    opciones = "<option disabled value>--SELECCIONAR EDIFICIO--</option>"
+    $.get("../administrador/edificio/todos",
+      function (edificios, textStatus, jqXHR) {
+        $.each(edificios, function (clave, edificio) {
+          if (id != edificio['id']) {
+            opciones += `<option value="${edificio['id']}">${edificio['nombre']}</option>`;
+          }
+        });
+        callback(opciones);
+      }
+    );
+  }
   $(document).ready(function() {
 
     $("#frmNuevoEdificio").keypress(function(event) {
@@ -43,13 +56,16 @@
       grid.find(".command-edit").on("click", function(e){
         $.get("{{url('administrador/habitacion')}}/"+$(this).data("id"), 
           function(habitacion, textStatus, xhr) {
-            $("#numero_editar").val(habitacion[0]['numero']);
-            $("#piso_editar").val(habitacion[0]['piso']);
-            $("#televisor_editar").val(habitacion[0]['televisor']);
-            $("#precio_editar").val(habitacion[0]['precio'].toFixed(2));
-            $("#edificio_id_editar").html(habitacion[1]);
-            $("#frmEditarHabitacion").prop('action', "{{url('habitacion')}}/" + habitacion[0]['id']);
-            $("#editar").modal('show');
+            $("#habitacion_id").val(habitacion['id']);
+            $("#numero_editar").val(habitacion['numero']);
+            $("#piso_editar").val(habitacion['piso']);
+            $("#televisor_editar").val(habitacion['televisor']);
+            $("#precio_editar").val(habitacion['precio'].toFixed(2));
+            $("#edificio_id_editar").html(`<option value="${habitacion['edificio_id']}">${habitacion['edificio']['nombre']}</option>`)
+            llenarEdificiosEditar(habitacion['edificio_id'], function(opciones){
+              $("#edificio_id_editar").append(opciones);
+              $("#editar").modal('show');
+            });
           }
         );
       }).end().find(".command-delete").on('click', function(e) {
@@ -59,6 +75,29 @@
           $("#frmEliminarHabitacion").prop('action', "{{url('habitacion')}}/" + data[0]['id']);
           $("#eliminar").modal('show');
         });
+      });
+    });
+
+    $("#frmEditarHabitacion").submit(function(event){
+      event.preventDefault();
+      $("#fade").modal("show");
+      $("#editar").modal("hide");
+      editarHabitacion = {
+        numero: $("#numero_editar").val(),
+        piso: $("#piso_editar").val(),
+        televisor: $("#televisor_editar").val(),
+        precio: $("#precio_editar").val(),
+        edificio_id : $("#edificio_id_editar").val(),
+        _method: 'put'
+      };
+      $.post("{{url('administrador/habitacion')}}/"+$("#habitacion_id").val(), editarHabitacion,
+        function (data, textStatus, jqXHR) {
+          $("#tblHabitaciones").bootgrid("reload");
+          $("#fade").modal('hide');
+          toastr.success("LA HABITACIÓN FUE MODIFICADA CON ÉXITO");
+        }
+      ).error(function(errores){
+        $("#editar").modal("show");
       });
     });
 

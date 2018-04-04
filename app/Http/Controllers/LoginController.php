@@ -16,7 +16,7 @@ class LoginController extends Controller{
 
   public function inicio(){
     if (Auth::check()) {
-      return redirect('verificar-tipo');
+      return redirect('login/verificar-tipo');
     }else {
       return redirect('login');
     }

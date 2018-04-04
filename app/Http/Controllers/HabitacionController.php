@@ -47,6 +47,10 @@ class HabitacionController extends Controller{
         $order_by = 'piso';
         $order_name = $sort['piso'];
     }
+    if (isset($sort['televisor'])) {
+        $order_by = 'televisor';
+        $order_name = $sort['televisor'];
+    }
     if (isset($sort['precio'])) {
         $order_by = 'precio';
         $order_name = $sort['precio'];
@@ -71,6 +75,7 @@ class HabitacionController extends Controller{
           ->select(
             'habitaciones.id as id',
             'habitaciones.numero as numero',
+            'habitaciones.televisor as televisor',
             'edificios.nombre as edificio',
             'habitaciones.piso as piso',
             'habitaciones.precio as precio'
@@ -86,10 +91,12 @@ class HabitacionController extends Controller{
           ->where('habitaciones.numero', 'like', '%'.$where.'%')
           ->orWhere('edificios.nombre', 'like', '%'.$where.'%')
           ->orWhere('habitaciones.piso', 'like', '%'.$where.'%')
+          ->orWhere('habitaciones.televisor', 'like', '%'.$where.'%')
           ->orWhere('habitaciones.precio', 'like', '%'.$where.'%')
           ->select(
             'habitaciones.id as id',
             'habitaciones.numero as numero',
+            'habitaciones.televisor as televisor',
             'edificios.nombre as edificio',
             'habitaciones.piso as piso',
             'habitaciones.precio as precio'
@@ -115,6 +122,7 @@ class HabitacionController extends Controller{
           ->orWhere('edificios.nombre', 'like', '%'.$where.'%')
           ->orWhere('habitaciones.piso', 'like', '%'.$where.'%')
           ->orWhere('habitaciones.precio', 'like', '%'.$where.'%')
+          ->orWhere('habitaciones.televisor', 'like', '%'.$where.'%')
           ->distinct()
           ->get();
 
@@ -132,6 +140,7 @@ class HabitacionController extends Controller{
           "numero" => $habitacion->numero,
           "edificio" => $habitacion->edificio,
           "piso"=>$habitacion->piso,
+          "televisor"=>$habitacion->televisor,
           "precio"=>number_format($habitacion->precio, 2, '.', ' ')
         )
       );
@@ -153,38 +162,29 @@ class HabitacionController extends Controller{
   }
 
   public function buscar($id){
-    return Habitacion::with('edificio')->with('huespedes.persona')->where('id', $id)->first();
-    $habitacion = \App\Habitacion::find($id);
-    $htmlEdificio = "<option value='".$habitacion->edificio_id."'>".$habitacion->edificio->nombre." (ACTUAL)</option>
-      <option value=''>--SELECCIONAR EDIFICIO--</option>";
-      foreach(\App\Edificio::all() as $edificio){
-        $htmlEdificio .= "<option value='".$edificio->id."'>".$edificio->nombre."</option>";
-      }
-    $huesped = \App\Huesped::where('habitacion_id', $id)
-      ->where(function($query){
-        $query->whereDate(\DB::raw("date(salida)"), '>=', \Carbon\Carbon::now()->format('Y-m-d'))
-        ->orWhere('salida', null);
-      })->first();
-    return [$habitacion, $htmlEdificio, $habitacion->edificio, $huesped];
+    return Habitacion::with('edificio')->where('id', $id)->first();
   }
 
   public function modificar(Request $request, $id){
-    $habitacion = \App\Habitacion::find($id);
+    $this->validate($request, [
+      'edificio_id'=>'required|exists:edificios,id',
+      'numero'=>'required|integer',
+      'precio'=>'required|numeric',
+      'piso'=>'required|integer',
+      'televisor'=>'nullable'
+    ]);
+    $habitacion = Habitacion::find($id);
     $habitacion->numero = $request->numero;
     $habitacion->piso = $request->piso;
     $habitacion->televisor = mb_strtoupper($request->televisor);
     $habitacion->precio = str_replace(' ', '', $request->precio);
     $habitacion->edificio_id = $request->edificio_id;
     $habitacion->save();
-    return redirect('habitacion')->with('correcto', 'LA HABITACION '.$habitacion->numero.' EN EL EDIFICIO '.
-    $habitacion->edificio->nombre.' FUE MODIFICADO CON ÉXITO');
   }
 
   public function eliminar($id){
     $habitacion = \App\Habitacion::find($id);
     $habitacion->delete();
-    return redirect('habitacion')->with('info', 'LA HABITACION '.$habitacion->numero.' EN EL EDIFICIO '.
-    $habitacion->edificio->nombre.' FUE ELIMINADO CON ÉXITO');
   }
 
 }

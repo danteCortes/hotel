@@ -64,9 +64,9 @@ Route::prefix('administrador')->group(function(){
   });
   Route::prefix('habitacion')->group(function(){
     Route::get('/', 'HabitacionController@inicio');
+    Route::get('/{id}', 'HabitacionController@buscar');
     Route::post('/', 'HabitacionController@guardar');
     Route::post('listar', 'HabitacionController@listar');
-    Route::post('buscar', 'HabitacionController@buscar');
     Route::put('/{id}', 'HabitacionController@modificar');
     Route::delete('/{id}', 'HabitacionController@eliminar');
   });
