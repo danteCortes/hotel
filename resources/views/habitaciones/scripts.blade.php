@@ -69,12 +69,15 @@
           }
         );
       }).end().find(".command-delete").on('click', function(e) {
-        $.post("{{url('habitacion/buscar')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
-          $("#numero_eliminar").html(data[0]['numero']);
-          $("#edificio_eliminar").html(data[2]['nombre']);
-          $("#frmEliminarHabitacion").prop('action', "{{url('habitacion')}}/" + data[0]['id']);
-          $("#eliminar").modal('show');
-        });
+        id = $(this).data("id");
+        $.get("{{url('administrador/habitacion')}}/" + id, 
+          function(habitacion, textStatus, xhr) {
+            $("#numero_eliminar").text(habitacion['numero']);
+            $("#edificio_eliminar").text(habitacion['edificio']['nombre']);
+            $("#frmEliminarHabitacion > div.modal-footer > input[type='hidden'][name='habitacion_id']").val(habitacion['id']);
+            $("#eliminar").modal('show');
+          }
+        );
       });
     });
 
@@ -99,6 +102,23 @@
       ).error(function(errores){
         $("#editar").modal("show");
       });
+    });
+
+    $("#frmEliminarHabitacion").submit(function(event){
+      event.preventDefault();
+      $("#fade").modal("show");
+      $("#eliminar").modal("hide");
+      id = $("#frmEliminarHabitacion > div.modal-footer > input[type='hidden'][name='habitacion_id']").val();
+      $.post("{{url('administrador/habitacion')}}/"+id, 
+        {
+          _method: 'delete'
+        },
+        function (data, textStatus, jqXHR) {
+          $("#tblHabitaciones").bootgrid("reload");
+          $("#fade").modal("hide");
+          toastr.info("LA HABITACIÓN FUE ELIMINADA CON ÉXITO");
+        }
+      );
     });
 
     $('.moneda').mask("# ##0.00", {reverse: true});
