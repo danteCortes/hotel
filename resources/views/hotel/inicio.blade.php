@@ -44,7 +44,7 @@
             <tr v-for="habitacion in habitaciones">
               <td class="text-center">@{{habitacion.numero}}</td>
               <td class="text-left">@{{habitacion.edificio.nombre}}</td>
-              <td class="text-left"></td>
+              <td class="text-left">@{{obtenerHuesped(habitacion.huespedes)}}</td>
               <td class="text-left">@{{habitacion.televisor}}</td>
               <td class="text-right">@{{habitacion.precio.toFixed(2)}}</td>
               <td class="text-center">

@@ -21,8 +21,8 @@ class CrearTablaHuespedes extends Migration
             $table->integer('habitacion_id')->unsigned();
             $table->foreign('habitacion_id')->on('habitaciones')->references('id')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->date('inicio');
-            $table->date('salida')->nullable();
+            $table->datetime('inicio');
+            $table->datetime('salida')->nullable();
         });
     }
 

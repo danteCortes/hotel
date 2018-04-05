@@ -14,6 +14,15 @@ class HuespedController extends Controller{
 
   public function guardar(Request $request){
 
+    $this->validate($request, [
+      'dni'=>'required|digits:8',
+      'nombres'=>'required',
+      'apellidos'=>'required',
+      'telefono'=>'nullable',
+      'salida'=>'nullable|date',
+      'habitacion_id'=>'required|exists:habitaciones,id'
+    ]);
+
     $datosPersona = ['dni'=>$request->dni, 'nombres'=>$request->nombres, 'apellidos'=>$request->apellidos,
       'direccion'=>null, 'telefono'=>$request->telefono];
     if ($persona = Persona::where('dni', $request->dni)->first()) {
@@ -22,16 +31,12 @@ class HuespedController extends Controller{
       $persona = PersonaTrait::guardar($datosPersona);
     }
     
-    $datosHuesped = ['persona_id'=>$persona->id, 'habitacion_id'=>$request->habitacion_id, 
+    $datosHuesped = ['persona_dni'=>$persona->dni, 'habitacion_id'=>$request->habitacion_id, 
       'inicio'=>Carbon::now()->format('Y-m-d H:i:s'), 'salida'=>$request->salida];
     $huesped = HuespedTrait::guardar($datosHuesped);
 
-    PagoTrait::guardar(['huesped_id'=>$huesped->id, 'fecha'=>$huesped->inicio, 'concepto'=>'INGRESO AL HOTEL',
-      'monto'=>$huesped->habitacion->precio]);
-
-    return redirect()->back()->with('correcto', 'EL HUESPED '.$huesped->persona->nombres.' '.
-      $huesped->persona->apellidos.' FUE REGISTRADO EN LA HABITACION '.$huesped->habitacion->numero.
-      ' '.$huesped->habitacion->edificio->nombre.' CON ÉXITO');
+    // PagoTrait::guardar(['huesped_id'=>$huesped->id, 'fecha'=>$huesped->inicio, 'concepto'=>'INGRESO AL HOTEL',
+    //   'monto'=>$huesped->habitacion->precio]);
   }
 
   public function buscar($id){

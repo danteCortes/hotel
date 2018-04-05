@@ -4,7 +4,6 @@ Route::prefix('hotel')->group(function(){
   Route::get('/', 'HotelController@inicio');
   Route::prefix('huesped')->group(function(){
     Route::get('/{id}', 'HuespedController@buscar')->where('id', '[0-9]+');
-    Route::post('/', 'HuespedController@guardar')->name('huesped');
     Route::put('/{id}', 'HuespedController@modificar')->where('id', '[0-9]+');
   });
   Route::prefix('habitacion')->group(function(){
@@ -70,5 +69,8 @@ Route::prefix('administrador')->group(function(){
     Route::post('listar', 'HabitacionController@listar');
     Route::put('/{id}', 'HabitacionController@modificar')->where('id', '[0-9]+');
     Route::delete('/{id}', 'HabitacionController@eliminar')->where('id', '[0-9]+');
+  });
+  Route::prefix('huesped')->group(function(){
+    Route::post('/', 'HuespedController@guardar');
   });
 });

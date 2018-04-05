@@ -1,4 +1,13 @@
 <script type="text/javascript">
+  Vue.component('habitacion', {
+    props: ['numero'],
+    template: "<strong>@{{numero}}</strong>"
+  });
+
+  Vue.component('edificio', {
+    props: ['nombre'],
+    template: "<strong>@{{nombre}}</strong>"
+  });
 
   new Vue({
     el: '#wrap',
@@ -20,17 +29,98 @@
           ubicacion: ''
         },
         huespedes: []
-      }
+      },
+      nuevoHuesped: {
+        dni: '',
+        nombres: '',
+        apellidos: '',
+        telefono: '',
+        salida: ''
+      },
+      errores: []
     },
     methods: {
       obtenerhabitaciones: function(){
         axios.get("../administrador/habitacion/todos").then(response=>{
           this.habitaciones = response.data;
+        }).catch(errores => {
+          console.log(errores.response);
         });
       },
       mostrarFrmRegistrar: function(habitacion){
         this.habitacion = habitacion;
         $("#registrar").modal("show");
+      },
+      registrarHuesped: function(){
+        $("#fade").modal("show");
+        $("#registrar").modal("hide");
+        url = "administrador/huesped";
+        axios.post(url, {
+          dni: this.nuevoHuesped.dni,
+          nombres: this.nuevoHuesped.nombres,
+          apellidos: this.nuevoHuesped.apellidos,
+          telefono: this.nuevoHuesped.telefono,
+          salida: this.nuevoHuesped.salida,
+          habitacion_id: this.habitacion.id
+        }).then(response => {
+          this.obtenerhabitaciones();
+          this.habitacion = {
+            id: '',
+            numero: '',
+            edificio_id: '',
+            televisor: '',
+            precio: '',
+            piso: '',
+            edificio: {
+              id: '',
+              nombre: '',
+              ubicacion: ''
+            },
+            huespedes: []
+          };
+          this.nuevoHuesped = {
+            dni: '',
+            nombres: '',
+            apellidos: '',
+            telefono: '',
+            salida: ''
+          };
+          this.errores = [];
+          $("#fade").modal("hide");
+          toastr.success("EL HUESPED FUE REGISTRADO CON ÉXITO.");
+        }).catch(errores => {
+          this.errores = errores.response.data;
+          $("#registrar").modal("show");
+          $("#fade").modal("hide");
+        });
+      },
+      obtenerHuesped: function(huespedes){
+        respuesta = {
+          inicio: '0000-01-01 00:00:00',
+          salida: null,
+          persona: {
+            nombres: '',
+            apellidos: ''
+          }
+        };
+        $.each(huespedes, function (clave, huesped) { 
+          if (huesped.inicio) {
+            fecha_evaluada = new Date(respuesta.inicio).getTime();
+            fecha = new Date(huesped.inicio).getTime();
+            if (fecha_evaluada < fecha) {
+              respuesta = huesped;
+            }
+          }
+        });
+        if (respuesta.salida) {
+          salida = new Date(respuesta.salida).getTime() + (24*60*60*1000);
+          hoy = new Date().getTime();
+          if (salida > hoy) {
+            return respuesta.persona.nombres + " " + respuesta.persona.apellidos;
+          }
+        }else{
+          return respuesta.persona.nombres + " " + respuesta.persona.apellidos;
+        }
       }
     }
   })

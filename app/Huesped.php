@@ -11,7 +11,7 @@ class Huesped extends Model{
   public $timestamps = false;
 
   public function persona(){
-    return $this->belongsTo('\App\Persona');
+    return $this->belongsTo('\App\Persona', 'persona_dni', 'dni');
   }
 
   public function habitacion(){

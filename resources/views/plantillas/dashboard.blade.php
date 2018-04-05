@@ -50,16 +50,6 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <!--For Development Only. Not required -->
-    <script>
-      less = {
-        env: "development",
-        relativeUrls: false,
-        rootpath: "/assets/"
-      };
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.1/less.js"></script>
-
   </head>
 
 <body class="  " style="background-color:#fbba00">

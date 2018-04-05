@@ -11,7 +11,7 @@ trait HuespedTrait{
   static function guardar(array $datos){
 
     $huesped = new Huesped;
-    $huesped->persona_id = $datos['persona_id'];
+    $huesped->persona_dni = $datos['persona_dni'];
     $huesped->habitacion_id = $datos['habitacion_id'];
     $huesped->inicio = $datos['inicio'];
     if ($datos['salida']) {

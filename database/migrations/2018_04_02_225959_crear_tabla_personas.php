@@ -18,8 +18,8 @@ class CrearTablaPersonas extends Migration
             $table->primary('dni');
             $table->string('nombres');
             $table->string('apellidos');
-            $table->string('direccion');
-            $table->string('telefono');
+            $table->string('direccion')->nullable();
+            $table->string('telefono')->nullable();
         });
     }
 
