@@ -46,7 +46,7 @@
               <td class="text-left">@{{habitacion.edificio.nombre}}</td>
               <td class="text-left">@{{obtenerHuesped(habitacion.huespedes).persona.nombres + " " + obtenerHuesped(habitacion.huespedes).persona.apellidos}}</td>
               <td class="text-left">@{{habitacion.televisor}}</td>
-              <td class="text-right">@{{habitacion.precio.toFixed(2)}}</td>
+              <td class="text-right">@{{habitacion.precio}}</td>
               <td class="text-center">
                 <button v-if="!obtenerHuesped(habitacion.huespedes).id" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Registrar" @click="mostrarFrmRegistrar(habitacion)">
                   <span class="fa fa-plus"></span>
@@ -54,6 +54,9 @@
                 <button class="btn btn-success btn-xs" data-toggle="tooltip" title="Pagar" @click="mostrarFrmPagar(obtenerHuesped(habitacion.huespedes).id)">
                   <span class="fa fa-plus"></span>
                 </button>
+                {{Form::button('<span class="fa fa-eye"> </span>', ['type'=>'button', 'data-toggle'=>'tooltip', 
+                  'title'=>'Ver Pagos', '@click.prevent'=>'verPagos(obtenerHuesped(habitacion.huespedes).id)',
+                  'class'=>'btn btn-success btn-xs'])}}
               </td>
             </tr>
           </tbody>

@@ -41,9 +41,6 @@
   @include('tiposPago.mdlNuevo')
   @include('tiposPago.mdlEditar')
   @include('tiposPago.mdlEliminar')
-  <pre>
-    @{{ $data }}
-  </pre>
 @endsection
 
 @section('scripts')

@@ -16,6 +16,10 @@ class Pago extends Model{
     return $this->belongsTo('App\Huesped');
   }
 
+  public function tipoPago(){
+    return $this->belongsTo('App\TipoPago', 'tipo_pago_id');
+  }
+
   public function getMontoAttribute($value){
     return number_format($value, 2, '.', '');
   }

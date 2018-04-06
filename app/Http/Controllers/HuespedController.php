@@ -35,12 +35,12 @@ class HuespedController extends Controller{
       'inicio'=>Carbon::now()->format('Y-m-d H:i:s'), 'salida'=>$request->salida];
     $huesped = HuespedTrait::guardar($datosHuesped);
 
-    // PagoTrait::guardar(['huesped_id'=>$huesped->id, 'fecha'=>$huesped->inicio, 'concepto'=>'INGRESO AL HOTEL',
-    //   'monto'=>$huesped->habitacion->precio]);
+    PagoTrait::guardar(['huesped_id'=>$huesped->id, 'tipo_pago_id'=>1, 'fecha'=>$huesped->inicio,
+      'monto'=>$huesped->habitacion->precio]);
   }
 
   public function buscar($id){
-    return Huesped::with('habitacion.edificio')->with('pagos')->with('persona')->where('id', $id)->first();
+    return Huesped::with('habitacion.edificio')->with('pagos.tipoPago')->with('persona')->where('id', $id)->first();
   }
 
   public function modificar(Request $request, $id){

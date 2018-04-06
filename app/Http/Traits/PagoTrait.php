@@ -10,8 +10,8 @@ class PagoTrait{
 
     $pago = new Pago;
     $pago->huesped_id = $datos['huesped_id'];
+    $pago->tipo_pago_id = $datos['tipo_pago_id'];
     $pago->fecha = $datos['fecha'];
-    $pago->concepto = $datos['concepto'];
     $pago->monto = $datos['monto'];
     $pago->save();
 

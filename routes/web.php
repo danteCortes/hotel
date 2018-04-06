@@ -81,4 +81,7 @@ Route::prefix('administrador')->group(function(){
     Route::put('/{id}', 'TipoPagoController@modificar')->where('id', '[0-9]+');
     Route::delete('/{id}', 'TipoPagoController@eliminar')->where('id', '[0-9]+');
   });
+  Route::prefix('persona')->group(function(){
+    Route::get('/{dni}', 'PersonaController@buscar')->where('dni', '[0-9]+');
+  });
 });

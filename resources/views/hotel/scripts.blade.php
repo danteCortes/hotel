@@ -37,7 +37,40 @@
         telefono: '',
         salida: ''
       },
+      huesped: {
+        id: '',
+        habitacion_id: '',
+        persona_dni: '',
+        inicio: '',
+        salida: null,
+        habitacion: {
+          id: '',
+          edificio_id: '',
+          numero: '',
+          piso: '',
+          precio: '',
+          televisor: '',
+          edificio: {
+            id: '',
+            nombre: '',
+            ubicacion: ''
+          }
+        },
+        persona: {
+          dni: '',
+          nombres: '',
+          apellidos: '',
+          telefono: '',
+          direccion: ''
+        },
+        pagos: []
+      },
       errores: []
+    },
+    computed: {
+      formatearFechaInicio: function(){
+        return moment(this.huesped.inicio).format("DD/MM/YYYY HH:mm A");
+      }
     },
     methods: {
       obtenerhabitaciones: function(){
@@ -90,11 +123,13 @@
           };
           this.errores = [];
           $("#fade").modal("hide");
+          $("body").css('padding-right: 0px;');
           toastr.success("EL HUESPED FUE REGISTRADO CON ÉXITO.");
-        }).catch(errores => {
-          this.errores = errores.response.data;
+        }).catch(errors => {
+          this.errores = errors.response.data;console.log(errors.response);
           $("#registrar").modal("show");
           $("#fade").modal("hide");
+          $("body").css('padding-right: 0px;');
         });
       },
       obtenerHuesped: function(huespedes){
@@ -134,6 +169,24 @@
           console.log(fecha2.diff(fecha1, 'days'), ' dias de diferencia');
           $("#mdlPagar").modal("show");
         });
+      },
+      buscarPersona: function(dni){
+        url = "administrador/persona/" + dni;
+        axios.get(url).then(response => {
+          this.nuevoHuesped.nombres = response.data.nombres;
+          this.nuevoHuesped.apellidos = response.data.apellidos;
+          this.nuevoHuesped.telefono = response.data.telefono;
+        });
+      },
+      verPagos: function(huesped_id){
+        url = "administrador/huesped/" + huesped_id;
+        axios.get(url).then(response => {
+          this.huesped = response.data;
+          $("#mdlMostrarPagos").modal("show");
+        });
+      },
+      formatearFecha: function(fecha){
+        return moment(fecha).format("DD/MM/YYYY HH:mm A");
       }
     }
   })

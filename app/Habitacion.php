@@ -18,6 +18,8 @@ class Habitacion extends Model{
     return $this->hasMany('\App\Huesped', 'habitacion_id');
   }
 
-  
+  public function getPrecioAttribute($precio){
+    return number_format($precio, 2, '.', '');
+  }
 
 }

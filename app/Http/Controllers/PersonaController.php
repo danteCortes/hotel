@@ -89,11 +89,8 @@ class PersonaController extends Controller{
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
   */
-  public function buscar(Request $request){
-    if ($persona = Persona::find($request->dni)) {
-      return $persona;
-    }
-    return 0;
+  public function buscar($dni){
+    return Persona::find($dni);
   }
 
 }

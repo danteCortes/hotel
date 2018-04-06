@@ -16,7 +16,7 @@
             <div class="panel-body">
               <div class="form-group">
                 <input type="text" v-model="nuevoHuesped.dni" class="form-control dni input-sm" placeholder="DNI*" name="dni"
-                  required data-mask="99999999">
+                  required data-mask="99999999" @change="buscarPersona(nuevoHuesped.dni)">
                 <span class="text-danger" v-for="error in errores.dni" style="color: #880000">@{{error}}</span>
               </div>
               <div class="form-group">
