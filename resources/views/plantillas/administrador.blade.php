@@ -24,4 +24,9 @@ Administrador
     <i class="fa fa-hotel"></i><span class="link-title">&nbsp;Habitaciones</span>
   </a>
 </li>
+<li class="">
+  <a href="{{url('administrador/tipo-pago')}}">
+    <i class="fa fa-dollar"></i><span class="link-title">&nbsp;Tipos de Pago</span>
+  </a>
+</li>
 @stop

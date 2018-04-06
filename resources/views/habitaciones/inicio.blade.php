@@ -35,7 +35,7 @@
   @include('habitaciones.mdlNuevo')
   @include('habitaciones.mdlEditar')
   @include('habitaciones.mdlEliminar')
-  @stop
+@stop
 
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}

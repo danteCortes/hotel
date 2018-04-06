@@ -73,4 +73,12 @@ Route::prefix('administrador')->group(function(){
     Route::get('/{id}', 'HuespedController@buscar')->where('id', '[0-9]+');
     Route::post('/', 'HuespedController@guardar');
   });
+  Route::prefix('tipo-pago')->group(function(){
+    Route::get('/', 'TipoPagoController@inicio');
+    Route::get('/todos', 'TipoPagoController@todos');
+    Route::get('/{id}', 'TipoPagoController@buscar')->where('id', '[0-9]+');
+    Route::post('/', 'TipoPagoController@guardar');
+    Route::put('/{id}', 'TipoPagoController@modificar')->where('id', '[0-9]+');
+    Route::delete('/{id}', 'TipoPagoController@eliminar')->where('id', '[0-9]+');
+  });
 });

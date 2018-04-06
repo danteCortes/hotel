@@ -51,7 +51,8 @@
         <div class="modal-footer" style="background-color:#385a94">
           <button type="button" class="btn btn-default" data-dismiss="modal">
             <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
-          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
+          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> 
+            Guardar</button>
         </div>
       {{Form::close()}}
     </div>
