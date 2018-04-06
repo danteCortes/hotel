@@ -188,7 +188,9 @@ class HabitacionController extends Controller{
   }
 
   public function todos(){
-    return Habitacion::with('edificio')->with('huespedes.persona')->orderBy('edificio_id')->get();
+    return Habitacion::with('edificio')->with(['huespedes' => function($consulta){
+      $consulta->latest('inicio')->with('persona');
+    }])->orderBy('edificio_id')->get();
   }
 
 }

@@ -44,11 +44,14 @@
             <tr v-for="habitacion in habitaciones">
               <td class="text-center">@{{habitacion.numero}}</td>
               <td class="text-left">@{{habitacion.edificio.nombre}}</td>
-              <td class="text-left">@{{obtenerHuesped(habitacion.huespedes)}}</td>
+              <td class="text-left">@{{obtenerHuesped(habitacion.huespedes).persona.nombres + " " + obtenerHuesped(habitacion.huespedes).persona.apellidos}}</td>
               <td class="text-left">@{{habitacion.televisor}}</td>
               <td class="text-right">@{{habitacion.precio.toFixed(2)}}</td>
               <td class="text-center">
-                <button class="btn btn-primary btn-xs" data-toggle="tooltip" title="Registrar" @click="mostrarFrmRegistrar(habitacion)">
+                <button v-if="!obtenerHuesped(habitacion.huespedes).id" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Registrar" @click="mostrarFrmRegistrar(habitacion)">
+                  <span class="fa fa-plus"></span>
+                </button>
+                <button class="btn btn-success btn-xs" data-toggle="tooltip" title="Pagar" @click="mostrarFrmPagar(obtenerHuesped(habitacion.huespedes).id)">
                   <span class="fa fa-plus"></span>
                 </button>
               </td>
@@ -96,6 +99,7 @@
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
   {{Html::script('assets/js/jquery.printarea.js')}}
+  {{Html::script('assets/lib/moment/moment.min.js')}}
   {{Html::script('assets/js/vue.js')}}
   {{Html::script('assets/js/axios.js')}}
   @include('hotel.scripts')

@@ -44,7 +44,10 @@
         axios.get("../administrador/habitacion/todos").then(response=>{
           this.habitaciones = response.data;
         }).catch(errores => {
-          console.log(errores.response);
+          console.log(errores.response.statusText);
+          if (errores.response.statusText == 'Internal Server Error') {
+            this.obtenerhabitaciones();
+          }
         });
       },
       mostrarFrmRegistrar: function(habitacion){
@@ -116,11 +119,21 @@
           salida = new Date(respuesta.salida).getTime() + (24*60*60*1000);
           hoy = new Date().getTime();
           if (salida > hoy) {
-            return respuesta.persona.nombres + " " + respuesta.persona.apellidos;
+            return respuesta;
           }
         }else{
-          return respuesta.persona.nombres + " " + respuesta.persona.apellidos;
+          return respuesta;
         }
+      },
+      mostrarFrmPagar: function(id){
+        url = "administrador/huesped/" + id;
+        axios.get(url).then(response => {
+          this.habitacion = response.data.habitacion;
+          fecha1 = moment('2018-04-02 09:24:00');
+          fecha2 = moment('2018-04-06 02:44:53');
+          console.log(fecha2.diff(fecha1, 'days'), ' dias de diferencia');
+          $("#mdlPagar").modal("show");
+        });
       }
     }
   })
