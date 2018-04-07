@@ -1,7 +1,7 @@
 <div class="modal fade" id="mdlPagar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      {{Form::open(['id'=>'frmPagar'])}}
+      {{Form::open(['id'=>'frmPagar', 'class'=>'form-horizontal', 'autocomplete'=>'off', '@submit.prevent'=>'guardarPago'])}}
         {{ csrf_field() }}
         <div class="modal-header" style="background-color:#385a94; color:#fff;">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -14,15 +14,35 @@
           <div class="panel" style="background-color:#bd7406">
             <div class="panel-body">
               <div class="form-group">
-                {{Form::label(null, 'deuda', ['class'=>'control-label deuda'])}}
+                {{Form::label(null, 'deuda', ['class'=>'control-label col-sm-3'])}}
               </div>
               <div class="form-group">
-                <input type="text" class="form-control moneda input-sm" placeholder="PAGO" name="pago"
-                  required>
+                {{Form::label('Pago: ', null, ['class'=>'control-label col-sm-3'])}}
+                <div class="col-sm-9">
+                  {{Form::text('monto', null, ['class'=>'form-control moneda input-sm', 'placeholder'=>'MONTO',
+                    'required'=>'', ':value'=>'nuevoPago.monto', '@change'=>'cambiarMontoPago'])}}
+                  <span class="text-danger" v-for="error in errores.monto" style="color: #880000">@{{error}}</span>
+                </div>
               </div>
               <div class="form-group">
-                <input type="text" class="form-control mayuscula input-sm" placeholder="CONCEPTO" name="concepto"
-                  required>
+                {{Form::label('Tipo de Pago: ', null, ['class'=>'control-label col-sm-3'])}}
+                <div class="col-sm-9">
+                  <select name="tipo_pago_id" class="form-control input-sm" required v-model="nuevoPago.tipo_pago_id" 
+                    @change="buscarMonto(nuevoPago.tipo_pago_id)">
+                    <option value disabled>--SELECCIONAR TIPO DE PAGO--</option>
+                    <option v-for="tipoPago in tiposPago" :value="tipoPago.id">@{{ tipoPago.nombre }}
+                    </option>
+                  </select>
+                  <span class="text-danger" v-for="error in errores.tipo_pago_id" style="color: #880000">@{{error}}</span>
+                </div>
+              </div>
+              <div class="form-group">
+                {{Form::label('Descripción: ', null, ['class'=>'control-label col-sm-3'])}}
+                <div class="col-sm-9">
+                  {{Form::textarea('descripcion', null, ['class'=>'form-control mayuscula', 'placeholder'=>'DESCRIPCIÓN',
+                    'v-model'=>'nuevoPago.descripcion', 'rows'=>'3'])}}
+                  <span class="text-danger" v-for="error in errores.descripcion" style="color: #880000">@{{error}}</span>
+                </div>
               </div>
             </div>
           </div>

@@ -84,4 +84,7 @@ Route::prefix('administrador')->group(function(){
   Route::prefix('persona')->group(function(){
     Route::get('/{dni}', 'PersonaController@buscar')->where('dni', '[0-9]+');
   });
+  Route::prefix('pago')->group(function(){
+    Route::post('/', 'PagoController@guardar');
+  });
 });

@@ -13,8 +13,10 @@
     el: '#wrap',
     created: function(){
       this.obtenerhabitaciones();
+      this.obtenerTiposPago();
     },
     data: {
+      tiposPago: [],
       habitaciones: [],
       habitacion: {
         id: '',
@@ -65,6 +67,12 @@
         },
         pagos: []
       },
+      nuevoPago: {
+        huesped_id: '',
+        tipo_pago_id: '',
+        monto: '',
+        descripcion: ''
+      },
       errores: []
     },
     computed: {
@@ -80,6 +88,16 @@
           console.log(errores.response.statusText);
           if (errores.response.statusText == 'Internal Server Error') {
             this.obtenerhabitaciones();
+          }
+        });
+      },
+      obtenerTiposPago: function(){
+        url = "administrador/tipo-pago/todos";
+        axios.get(url).then(response => {
+          this.tiposPago = response.data;
+        }).catch(errores => {
+          if (errores.response.statusText == 'Internal Server Error') {
+            this.obtenerTiposPago();
           }
         });
       },
@@ -164,6 +182,7 @@
         url = "administrador/huesped/" + id;
         axios.get(url).then(response => {
           this.habitacion = response.data.habitacion;
+          this.nuevoPago.huesped_id = response.data.id;
           fecha1 = moment('2018-04-02 09:24:00');
           fecha2 = moment('2018-04-06 02:44:53');
           console.log(fecha2.diff(fecha1, 'days'), ' dias de diferencia');
@@ -187,6 +206,35 @@
       },
       formatearFecha: function(fecha){
         return moment(fecha).format("DD/MM/YYYY HH:mm A");
+      },
+      buscarMonto: function(id){
+        if (id == 1) {
+          this.nuevoPago.monto = this.habitacion.precio;
+        }else{
+          this.nuevoPago.monto = '';
+        }
+      },
+      cambiarMontoPago: function(event){
+        this.nuevoPago.monto = event.target.value;
+      },
+      guardarPago: function(){
+        $("#mdlPagar").modal('hide');
+        url = "administrador/pago";
+        axios.post(url, this.nuevoPago).then(response => {
+          this.nuevoPago = {
+            huesped_id: '',
+            tipo_pago_id: '',
+            monto: '',
+            descripcion: ''
+          };
+          this.errores = [];
+          toastr.success("EL PAGO FUE REGISTRADO CORRECTAMENTE.");
+        }).catch(error => {
+          if (error.response.data) {
+            this.errores = error.response.data;
+            $("#mdlPagar").modal('show');
+          }
+        });
       }
     }
   })
